@@ -1,6 +1,7 @@
 package com.example.synchronoustechnologytest
 
 import android.app.Application
+import com.example.synchronoustechnologytest.koin.KoinModule
 import org.koin.core.component.KoinComponent
 
 /**

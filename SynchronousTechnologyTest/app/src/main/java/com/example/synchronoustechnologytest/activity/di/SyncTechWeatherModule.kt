@@ -1,12 +1,12 @@
-package com.example.synchronoustechnologytest.di
+package com.example.synchronoustechnologytest.activity.di
 
 import android.app.Application
-import com.example.synchronoustechnologytest.SyncTechWeatherContract
-import com.example.synchronoustechnologytest.SyncTechWeatherPresenter
-import com.example.synchronoustechnologytest.SyncTechWeatherViewModel
-import com.example.synchronoustechnologytest.datamanager.SyncTechWeatherPersistence
-import com.example.synchronoustechnologytest.datamanager.SyncTechWeatherRepository
-import com.example.synchronoustechnologytest.datamanager.SyncTechWeatherService
+import com.example.synchronoustechnologytest.activity.SyncTechWeatherContract
+import com.example.synchronoustechnologytest.activity.SyncTechWeatherPresenter
+import com.example.synchronoustechnologytest.activity.SyncTechWeatherViewModel
+import com.example.synchronoustechnologytest.activity.datamanager.SyncTechWeatherPersistence
+import com.example.synchronoustechnologytest.activity.datamanager.SyncTechWeatherRepository
+import com.example.synchronoustechnologytest.activity.datamanager.SyncTechWeatherService
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 

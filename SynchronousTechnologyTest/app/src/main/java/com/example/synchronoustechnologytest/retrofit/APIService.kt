@@ -1,16 +1,15 @@
 package com.example.synchronoustechnologytest.retrofit
 
-import okhttp3.ResponseBody
+import com.example.synchronoustechnologytest.model.Forecast
 import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Query
 
 interface APIService {
-    @GET("onecall")
+    @GET("weather")
     fun fetchCurrentWeather(
         @Query("lat") lat: Float,
         @Query("lon") lon: Float,
-        @Query("exclude") exclude: String,
         @Query("appid") appId: String,
-    ): Call<ResponseBody>
+    ): Call<Forecast>
 }

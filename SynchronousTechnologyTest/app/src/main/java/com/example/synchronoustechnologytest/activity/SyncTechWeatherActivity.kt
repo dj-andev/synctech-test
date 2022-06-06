@@ -1,4 +1,4 @@
-package com.example.synchronoustechnologytest
+package com.example.synchronoustechnologytest.activity
 
 import android.Manifest
 import android.annotation.SuppressLint
@@ -10,6 +10,7 @@ import android.util.Log
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
+import com.example.synchronoustechnologytest.R
 import com.example.synchronoustechnologytest.base.BaseActivity
 import com.example.synchronoustechnologytest.databinding.ActivityMainBinding
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -65,6 +66,7 @@ class SyncTechWeatherActivity : BaseActivity() {
             if (location != null) {
                 val lat = location.latitude
                 val lon = location.longitude
+                viewModel.fetchWeatherReport(lat = lat.toFloat(), lon = lon.toFloat())
                 Log.i("SYNC_TEST","lat : $lat, lon : $lon")
             }
         } catch (e: java.lang.Exception) {

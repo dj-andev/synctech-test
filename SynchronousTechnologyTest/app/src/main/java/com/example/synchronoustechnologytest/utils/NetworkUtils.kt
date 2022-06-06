@@ -6,18 +6,15 @@ import android.net.NetworkCapabilities
 import android.os.Build
 
 object NetworkUtils {
-    fun isNetworkConnected(context: Context): Boolean{
+    fun isWIFIConnected(context: Context): Boolean{
         val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
             val network = connectivityManager.activeNetwork ?: return false
             val capabilities = connectivityManager.getNetworkCapabilities(network)
-            return capabilities?.let { it.hasTransport(NetworkCapabilities.TRANSPORT_WIFI)
-                    || it.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR)
-                    || it.hasTransport(NetworkCapabilities.TRANSPORT_VPN)
-                    || it.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET)} ?: kotlin.run { return false }
+            return capabilities?.let { it.hasTransport(NetworkCapabilities.TRANSPORT_WIFI)} ?: kotlin.run { return false }
         }else{
             val networkInfo = connectivityManager.activeNetworkInfo ?: return false
-            return networkInfo.isAvailable && (networkInfo.isConnected || networkInfo.isConnectedOrConnecting)
+            return networkInfo.type == ConnectivityManager.TYPE_WIFI && networkInfo.isAvailable && (networkInfo.isConnected || networkInfo.isConnectedOrConnecting)
         }
     }
 

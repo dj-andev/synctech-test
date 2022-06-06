@@ -18,7 +18,7 @@ abstract class ServiceAbstract {
     private lateinit var context: Context
 
     private fun getBaseUrl(): String {
-        return "https://api.openweathermap.org/data/3.0/"
+        return "https://api.openweathermap.org/data/2.5/"
     }
 
     constructor(context: Context) {
@@ -30,12 +30,12 @@ abstract class ServiceAbstract {
         Observable.create {
             try {
                 val response = call.execute()
-                Log.d("TEST", response.raw().request.url.toString())
-                Log.d("TEST", response.body().toString())
+                Log.d("SYNC_TEST", response.raw().request.url.toString())
+                Log.d("SYNC_TEST", response.body().toString())
                 when {
                     response.isSuccessful -> {
-                        val t = response.body()
-                        t?.let { data ->
+                        val body = response.body()
+                        body?.let { data ->
                             it.onNext(data)
                         } ?: run {
                             it.onErrorIfNotDisposed(Throwable(context.getString(R.string.something_went_wrong)))

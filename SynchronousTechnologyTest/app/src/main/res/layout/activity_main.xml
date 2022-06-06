@@ -7,7 +7,7 @@
 
         <variable
             name="syncTechWeatherViewModel"
-            type="com.example.synchronoustechnologytest.SyncTechWeatherViewModel" />
+            type="com.example.synchronoustechnologytest.activity.SyncTechWeatherViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
