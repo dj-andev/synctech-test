@@ -5,30 +5,20 @@ import android.view.View
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.work.*
 import com.example.synchronoustechnologytest.BuildConfig
 import com.example.synchronoustechnologytest.R
 import com.example.synchronoustechnologytest.activity.state.SyncTechWeatherState
 import com.example.synchronoustechnologytest.model.Forecast
 import com.example.synchronoustechnologytest.utils.NetworkUtils
-import com.example.synchronoustechnologytest.workermanager.ScheduleWorker
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.get
 import org.koin.core.parameter.parametersOf
-import java.text.DateFormat
-import java.text.SimpleDateFormat
-import java.util.*
-import java.util.concurrent.TimeUnit
 
 
 class SyncTechWeatherViewModel(val context: Application) : AndroidViewModel(context),
     SyncTechWeatherContract.ViewModel, KoinComponent {
-
-    companion object{
-        private const val SCHEDULER_WORKER ="ScheduleWorker"
-    }
 
     val locationName = MutableLiveData<String>()
     val coordinates = MutableLiveData<String>()
@@ -62,32 +52,16 @@ class SyncTechWeatherViewModel(val context: Application) : AndroidViewModel(cont
     override fun updateWeatherInfo(forecast: Forecast) {
         locationName.value = "Location - ${forecast.name}, ${forecast.sys.country}"
         coordinates.value = "Latitude - ${forecast.coord.lat}, Longitude - ${forecast.coord.lon}"
-        date.value = "Date - ${getDateFromTimeStamp(forecast.dt)}"
+        date.value = "Date - ${presenter.getDateFromTimeStamp(forecast.dt)}"
         temperature.value = "Temperature - ${((forecast.main.temp-32)*5)/9} degree Celsius"
         humidity.value = "Humidity - ${forecast.main.humidity}"
         pressure.value = "Pressure - ${forecast.main.pressure}"
         windSpeed.value = "Wind Speed - ${forecast.wind.speed} km/h"
-        sunRise.value = "Sunrise - ${getTimeFromTimeStamp(forecast.sys.sunrise)}"
-        sunset.value = "Sunset - ${getTimeFromTimeStamp(forecast.sys.sunset)}"
+        sunRise.value = "Sunrise - ${presenter.getTimeFromTimeStamp(forecast.sys.sunrise)}"
+        sunset.value = "Sunset - ${presenter.getTimeFromTimeStamp(forecast.sys.sunset)}"
         weather.value = "Weather - ${forecast.weather[0].main} -  ${forecast.weather[0].description}"
         hideLoader()
-        scheduleNextWeatherReport()
-    }
-
-    /***
-     * setup for periodic work manager to call weather api periodically
-     */
-    override fun scheduleNextWeatherReport() {
-        val constraints: Constraints = Constraints.Builder()
-            .setRequiredNetworkType(NetworkType.CONNECTED)
-            .build()
-        val periodicWorkRequestBuilder =
-            PeriodicWorkRequestBuilder<ScheduleWorker>(2, TimeUnit.HOURS)
-                .setConstraints(constraints).build()
-
-        WorkManager.getInstance().enqueueUniquePeriodicWork(
-            SCHEDULER_WORKER,
-            ExistingPeriodicWorkPolicy.KEEP, periodicWorkRequestBuilder)
+        presenter.scheduleNextWeatherReport()
     }
 
     override fun fetchWeatherReport(lat: Float, lon: Float) {
@@ -141,17 +115,5 @@ class SyncTechWeatherViewModel(val context: Application) : AndroidViewModel(cont
 
     private fun hideLoader() {
         loaderVisibility.value = View.GONE
-    }
-
-    private fun getDateFromTimeStamp(timeStamp: Long): String{
-        val formatter =  SimpleDateFormat("dd/MM/yyyy")
-        return formatter.format( Date(timeStamp))
-    }
-
-    private fun getTimeFromTimeStamp(timeStamp: Long): String{
-        val date = Date(timeStamp)
-        val formatter: DateFormat = SimpleDateFormat("HH:mm:ss.SSS")
-        formatter.setTimeZone(TimeZone.getTimeZone("UTC"))
-        return formatter.format(date)
     }
 }

@@ -13,7 +13,6 @@ interface SyncTechWeatherContract {
     interface ViewModel {
         fun getViewState(): LiveData<SyncTechWeatherState>
         fun updateWeatherInfo(forecast: Forecast)
-        fun scheduleNextWeatherReport()
         fun fetchWeatherReport(lat: Float, lon: Float)
         fun addDispose(dispose: Disposable)
         fun showError(message: String?)
@@ -26,6 +25,9 @@ interface SyncTechWeatherContract {
         fun getLat(): Float
         fun getLon(): Float
         fun getResponse(): Forecast?
+        fun getDateFromTimeStamp(timeStamp: Long): String
+        fun getTimeFromTimeStamp(timeStamp: Long): String
+        fun scheduleNextWeatherReport()
     }
 
     interface Repository{

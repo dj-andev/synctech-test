@@ -1,20 +1,27 @@
 package com.example.synchronoustechnologytest.activity
 
 import android.util.Log
+import androidx.work.*
 import com.example.synchronoustechnologytest.model.Forecast
-import com.example.synchronoustechnologytest.model.Weather
+import com.example.synchronoustechnologytest.workermanager.ScheduleWorker
 import com.google.gson.Gson
 import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
-import okhttp3.ResponseBody
+import java.text.DateFormat
+import java.text.SimpleDateFormat
+import java.util.*
+import java.util.concurrent.TimeUnit
 
 class SyncTechWeatherPresenter(
     val viewModel: SyncTechWeatherContract.ViewModel,
     val repository: SyncTechWeatherContract.Repository
-) :
-    SyncTechWeatherContract.Presenter {
+) : SyncTechWeatherContract.Presenter {
+
+    companion object{
+        private const val SCHEDULER_WORKER ="ScheduleWorker"
+    }
 
     override fun fetchCurrentWeatherForecast(
         lat: Float,
@@ -27,7 +34,7 @@ class SyncTechWeatherPresenter(
             appId = appId
         ).subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(object: Observer<Forecast>{
+            .subscribe(object : Observer<Forecast> {
                 override fun onSubscribe(d: Disposable) {
                     viewModel.addDispose(d)
                 }
@@ -57,7 +64,7 @@ class SyncTechWeatherPresenter(
     }
 
     override fun setLon(lon: Float) {
-       repository.setLon(lon)
+        repository.setLon(lon)
     }
 
     override fun getLat(): Float {
@@ -70,10 +77,38 @@ class SyncTechWeatherPresenter(
 
     override fun getResponse(): Forecast? {
         val response = repository.getResponse()
-        return if (response.isNotEmpty()){
+        return if (response.isNotEmpty()) {
             Gson().fromJson<Forecast>(response, Forecast::class.java)
-        }else{
+        } else {
             null
         }
+    }
+
+    override fun getDateFromTimeStamp(timeStamp: Long): String {
+        val formatter = SimpleDateFormat("dd/MM/yyyy")
+        return formatter.format(Date(timeStamp))
+    }
+
+    override fun getTimeFromTimeStamp(timeStamp: Long): String {
+        val date = Date(timeStamp)
+        val formatter: DateFormat = SimpleDateFormat("HH:mm:ss.SSS")
+        formatter.setTimeZone(TimeZone.getTimeZone("UTC"))
+        return formatter.format(date)
+    }
+
+    /***
+     * setup for periodic work manager to call weather api periodically
+     */
+    override fun scheduleNextWeatherReport() {
+        val constraints: Constraints = Constraints.Builder()
+            .setRequiredNetworkType(NetworkType.CONNECTED)
+            .build()
+        val periodicWorkRequestBuilder =
+            PeriodicWorkRequestBuilder<ScheduleWorker>(2, TimeUnit.HOURS)
+                .setConstraints(constraints).build()
+
+        WorkManager.getInstance().enqueueUniquePeriodicWork(
+            SCHEDULER_WORKER,
+            ExistingPeriodicWorkPolicy.KEEP, periodicWorkRequestBuilder)
     }
 }
