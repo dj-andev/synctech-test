@@ -17,7 +17,6 @@ interface SyncTechWeatherContract {
         fun fetchWeatherReport(lat: Float, lon: Float)
         fun addDispose(dispose: Disposable)
         fun showError(message: String?)
-        fun updateLayLon(lat: Float, lon: Float)
     }
 
     interface Presenter{

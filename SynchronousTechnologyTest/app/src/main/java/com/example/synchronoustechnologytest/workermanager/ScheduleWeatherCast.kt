@@ -20,8 +20,7 @@ class ScheduleWeatherCast(val context: Context): KoinComponent {
     init {
         val service = get<SyncTechWeatherContract.Service> { parametersOf(context) }
         val persistence = get<SyncTechWeatherContract.Persistence> { parametersOf(context) }
-        repository =
-            get<SyncTechWeatherContract.Repository> { parametersOf(service, persistence) }
+        repository = get<SyncTechWeatherContract.Repository> { parametersOf(service, persistence) }
     }
 
     fun fetchWeatherReport() {
@@ -37,7 +36,6 @@ class ScheduleWeatherCast(val context: Context): KoinComponent {
 
                 override fun onNext(forecast: Forecast) {
                     val forecastString = Gson().toJson(forecast)
-                    Log.i("SYNC_TEST", "${forecastString}")
                     repository.apply {
                         setResponse(forecastString)
                         setLat(repository.getLat())

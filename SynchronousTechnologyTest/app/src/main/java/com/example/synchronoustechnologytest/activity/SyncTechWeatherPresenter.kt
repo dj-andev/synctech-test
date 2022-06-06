@@ -40,6 +40,7 @@ class SyncTechWeatherPresenter(
                         setLat(lat)
                         setLon(lon)
                     }
+                    viewModel.updateWeatherInfo(forecast)
                 }
 
                 override fun onError(e: Throwable) {
