@@ -20,6 +20,7 @@ App Description
 The main purose of the is to fetch the weather forcase from the "OpenWeatherMap" API, and shown the result in the screen and alogn with the periodically fetching the weather report on every 2 hours. Onec we ge the weather repot we persist in the local preference for future use. And all this API call should happend only if the device connected with the WIFI network.
 
 link : https://lucid.app/lucidchart/1edad07b-8b31-433b-be4d-7ba595b191db/edit?invitationId=inv_28ae3a03-202f-47d2-875b-98f25da7a316&page=0_0#
+app flow: https://lucid.app/lucidchart/d9108a13-21f7-46fe-9a2b-64d5e6f04857/edit?viewport_loc=196%2C335%2C1707%2C768%2C0_0&invitationId=inv_313bb8ef-76f0-479c-a91b-e541a2e1f72b#
 
 Permission Used
 ==============
